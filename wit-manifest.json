@@ -1,0 +1,12 @@
+[
+    {
+        "commit": "76b3e12b581489858acb79acc07670fb0247c6e9",
+        "name": "firrtl-wake",
+        "source": "git@github.com:sifive/firrtl-wake.git"
+    },
+    {
+        "commit": "685790b2c6c7ff8ddfd34f2f84572a985d3416cc",
+        "name": "chisel3",
+        "source": "git@github.com:freechipsproject/chisel3.git"
+    }
+]
