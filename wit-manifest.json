@@ -5,7 +5,7 @@
         "source": "git@github.com:sifive/firrtl-wake.git"
     },
     {
-        "commit": "685790b2c6c7ff8ddfd34f2f84572a985d3416cc",
+        "commit": "600405254c20c14fb3389aa4758ec27dffe992d0",
         "name": "chisel3",
         "source": "git@github.com:freechipsproject/chisel3.git"
     }
