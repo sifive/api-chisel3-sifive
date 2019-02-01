@@ -13,7 +13,7 @@ trait ChiselCommonModule extends SbtModule with CommonOptions {
   def compileIvyDeps = macroPlugins
 
   def ivyDeps = Agg(
-    ivy"com.typesafe.scala-logging::scala-logging:3.7.2",
+    ivy"com.typesafe.scala-logging::scala-logging:3.9.0",
     ivy"net.jcazevedo::moultingyaml:0.4.0"
   )
 }
