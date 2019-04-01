@@ -1,5 +1,5 @@
 
 global def chisel3Project = millScalaProject "chisel3" here (firrtlProject, Nil) "chisel3" "Chisel3Base"
 
-publish scalaProjects = chisel3Project
+publish scalaProjects = chisel3Project, Nil
 
