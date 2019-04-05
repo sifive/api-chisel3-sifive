@@ -1,5 +1,34 @@
 
-global def chisel3Project = millScalaProject "chisel3" here (firrtlProject, Nil) "chisel3" "Chisel3Base"
+def commonOpts = "-deprecation", "-feature", Nil
 
-publish scalaProjects = chisel3Project
+global def chisel3CoreMacros _ =
+  def scalacOpts = "-Xplugin:{macrosParadiseJar.getPathName}", commonOpts
+  makeScalaModuleFromJSON here "chisel3Macros"
+  | scalaModuleAddSBTDefaults
+  | setScalaModuleRootDir "chisel3/coreMacros"
+  | setScalaModuleScalacOptions scalacOpts
 
+global def macrosParadiseJar =
+  def json = readIvyDepsJSON here // "macrosParadise"
+  def scalaVersion  =
+    json // "scalaVersion" | getJString | omap makeScalaVersion
+    | getOrElse (raise "scalaVersion not found!")
+  def dep =
+    json // "dependencies" | getJString | getOrElse (raise "macrosParadise ivy dependency not found!")
+    | parseIvyDep | expandIvyDep scalaVersion
+  resolveIvyDeps (dep, Nil) | getPairFirst | head
+
+global def chisel3Frontend _ =
+  def scalacOpts = "-Xplugin:{macrosParadiseJar.getPathName}", commonOpts
+  makeScalaModuleFromJSON here "chisel3Frontend"
+  | scalaModuleAddSBTDefaults
+  | setScalaModuleRootDir "chisel3/chiselFrontend"
+  | setScalaModuleDeps (chisel3CoreMacros Unit, firrtlScalaModule Unit, Nil)
+  | setScalaModuleScalacOptions scalacOpts
+
+global def chisel3ScalaModule _ =
+  makeScalaModuleFromJSON here "chisel3"
+  | scalaModuleAddSBTDefaults
+  | setScalaModuleRootDir "chisel3"
+  | setScalaModuleDeps (chisel3Frontend Unit, Nil)
+  | setScalaModuleScalacOptions commonOpts
