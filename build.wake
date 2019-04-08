@@ -1,7 +1,7 @@
 
 def buildDir = mkdir "build/chisel3"
 
-def scalacOpts = "-Xplugin:{macrosParadiseJar.getPathName}", "-deprecation", "-feature", Nil
+def scalacOpts = macrosParadisePlugin, "-deprecation", "-feature", Nil
 
 global def chisel3CoreMacros _ =
   makeScalaModuleFromJSON here "chisel3Macros"
@@ -10,6 +10,7 @@ global def chisel3CoreMacros _ =
   | setScalaModuleScalacOptions scalacOpts
 
 # TODO Should this be part of scala-wake proper?
+# It is also used by rocket-chip-wake
 def macrosParadiseJar =
   def json = readIvyDepsJSON here // "macrosParadise"
   def scalaVersion  =
@@ -19,6 +20,8 @@ def macrosParadiseJar =
     json // "dependencies" | getJString | getOrElse (raise "macrosParadise ivy dependency not found!")
     | parseIvyDep | expandIvyDep scalaVersion
   resolveIvyDeps (dep, Nil) | getPairFirst | head
+
+global def macrosParadisePlugin = "-Xplugin:{macrosParadiseJar.getPathName}"
 
 global def chisel3Frontend _ =
   makeScalaModuleFromJSON here "chisel3Frontend"
