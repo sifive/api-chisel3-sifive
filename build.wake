@@ -3,7 +3,7 @@ def buildDir = mkdir "build/chisel3"
 
 def scalacOpts = macrosParadisePlugin, "-deprecation", "-feature", Nil
 
-global def chisel3CoreMacros _ =
+global def chisel3CoreMacros =
   makeScalaModuleFromJSON here "chisel3Macros"
   | scalaModuleAddSBTDefaults
   | setScalaModuleRootDir "chisel3/coreMacros"
@@ -23,11 +23,11 @@ def macrosParadiseJar =
 
 global def macrosParadisePlugin = "-Xplugin:{macrosParadiseJar.getPathName}"
 
-global def chisel3Frontend _ =
+global def chisel3Frontend =
   makeScalaModuleFromJSON here "chisel3Frontend"
   | scalaModuleAddSBTDefaults
   | setScalaModuleRootDir "chisel3/chiselFrontend"
-  | setScalaModuleDeps (chisel3CoreMacros Unit, firrtlScalaModule Unit, Nil)
+  | setScalaModuleDeps (chisel3CoreMacros, firrtlScalaModule, Nil)
   | setScalaModuleScalacOptions scalacOpts
 
 global def chisel3Version = "3.2-SNAPSHOT"
@@ -49,12 +49,13 @@ def buildInfo ver =
   def outFile = "{outDir.getPathName}/BuildInfo.scala"
   write outFile (content | catWith "\n")
 
-global def chisel3ScalaModule _ =
+global def chisel3ScalaModule =
   def base =
     makeScalaModuleFromJSON here "chisel3"
     | scalaModuleAddSBTDefaults
     | setScalaModuleRootDir "chisel3"
-    | setScalaModuleDeps (chisel3Frontend Unit, Nil)
+    | setScalaModuleDeps (chisel3Frontend, Nil)
     | setScalaModuleScalacOptions scalacOpts
+  def genSrcs Unit = buildInfo base.getScalaModuleScalaVersion, Nil
   base
-  | editScalaModuleGeneratedSources (buildInfo base.getScalaModuleScalaVersion, _)
+  | setScalaModuleFnGeneratedSources genSrcs
