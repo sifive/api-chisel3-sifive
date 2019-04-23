@@ -1,6 +1,6 @@
 [
     {
-        "commit": "f2f6945be18df0f525021e34ae6ad3a9b08e2324",
+        "commit": "b96cf21347b6d066d636d0a6a8b077be218debd1",
         "name": "firrtl-wake",
         "source": "git@github.com:sifive/firrtl-wake.git"
     },
