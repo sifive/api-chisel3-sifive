@@ -21,7 +21,7 @@ def macrosParadiseJar =
     | parseIvyDep | expandIvyDep scalaVersion
   resolveIvyDeps (dep, Nil) | getPairFirst | head
 
-global def macrosParadisePlugin = "-Xplugin:{macrosParadiseJar.getPathName}"
+global def macrosParadisePlugin = "-Xplugin:$WORKSPACE/{macrosParadiseJar.getPathName}"
 
 global def chisel3Frontend =
   makeScalaModuleFromJSON here "chisel3Frontend"
