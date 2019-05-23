@@ -1,29 +1,42 @@
+def nilPath = source "/dev/null"
+
+def mustPass = match _
+  Pass a = a
+  Fail b = panic b.format
+
+def easyStringToRegExp =
+  stringToRegExp _ | mustPass
 
 def buildDir = mkdir "build/chisel3"
 
-def scalacOpts = "-deprecation", "-feature", Nil
-
-# We ignore scalaVersion because it comes from ScalaModule
-# The scalaVersion in ivydependencies.json is purely for fetching
-def macrosParadiseIvyDep =
-  def json = readIvyDepsJSON here // "macrosParadise"
-  json // "dependencies"
-  | getJString
-  | getOrElse (raise "macrosParadise ivy dependency not found!")
-  | stringToIvyDep
+def scalacOpts = macrosParadisePlugin, "-deprecation", "-feature", Nil
 
 global def chisel3CoreMacros =
   makeScalaModuleFromJSON here "chisel3Macros"
+  | scalaModuleAddSBTDefaults
   | setScalaModuleRootDir "chisel3/coreMacros"
   | setScalaModuleScalacOptions scalacOpts
-  | setScalaModuleCompilerPlugins (macrosParadiseIvyDep, Nil)
+
+# TODO Should this be part of scala-wake proper?
+# It is also used by rocket-chip-wake
+def macrosParadiseJar =
+  def json = (readIvyDepsJSON here | mustPass) // `macrosParadise`
+  def scalaVersion  =
+    json // `scalaVersion` | getJString | omap makeScalaVersion
+    | getOrElse nilScalaVersion
+  def dep =
+    json // `dependencies` | getJString | getOrElse ""
+    | parseIvyDep | expandIvyDep scalaVersion
+  resolveIvyDeps (dep, Nil) | getPairFirst | head | getOrElse nilPath
+
+global def macrosParadisePlugin = "-Xplugin:$WORKSPACE/{macrosParadiseJar.getPathName}"
 
 global def chisel3Frontend =
   makeScalaModuleFromJSON here "chisel3Frontend"
+  | scalaModuleAddSBTDefaults
   | setScalaModuleRootDir "chisel3/chiselFrontend"
   | setScalaModuleDeps (chisel3CoreMacros, firrtlScalaModule, Nil)
   | setScalaModuleScalacOptions scalacOpts
-  | setScalaModuleCompilerPlugins (macrosParadiseIvyDep, Nil)
 
 global def chisel3Version = "3.2-SNAPSHOT"
 
@@ -47,10 +60,10 @@ def buildInfo ver =
 global def chisel3ScalaModule =
   def base =
     makeScalaModuleFromJSON here "chisel3"
+    | scalaModuleAddSBTDefaults
     | setScalaModuleRootDir "chisel3"
     | setScalaModuleDeps (chisel3Frontend, Nil)
     | setScalaModuleScalacOptions scalacOpts
-    | setScalaModuleCompilerPlugins (macrosParadiseIvyDep, Nil)
   def genSrcs Unit = buildInfo base.getScalaModuleScalaVersion, Nil
   base
   | setScalaModuleFnGeneratedSources genSrcs
