@@ -6,24 +6,38 @@ def scalacOpts = "-deprecation", "-feature", Nil
 # We ignore scalaVersion because it comes from ScalaModule
 # The scalaVersion in ivydependencies.json is purely for fetching
 def macrosParadiseIvyDep =
-  def json = readIvyDepsJSON here // "macrosParadise"
-  json // "dependencies"
-  | getJString
-  | getOrElse (raise "macrosParadise ivy dependency not found!")
-  | stringToIvyDep
+  def extractIvyDep json =
+    json // `macrosParadise` // `dependencies` | getJString
+    | omapPartial stringToIvyDep
+    | getOrFail "macrosParadise ivy dependency not found!"
+  readIvyDepsJSON here
+  | rmapPass extractIvyDep
+  | rmapFail (makeError _ | Fail) # Convert Fail from String to Error
+
+# TODO Should this be in the standard lib?
+def orElse b = match _
+  Some a = Some a
+  None   = b
+
+# Adds an a compiler plugin dependency on macros paradise
+# If module is already broken, keeps old error
+global def addMacrosParadiseCompilerPlugin module =
+  match macrosParadiseIvyDep
+    Pass dep = module | editScalaModuleCompilerPlugins (dep, _)
+    Fail err = module | editScalaModuleError (orElse (Some err))
 
 global def chisel3CoreMacros =
   makeScalaModuleFromJSON here "chisel3Macros"
   | setScalaModuleRootDir "chisel3/coreMacros"
   | setScalaModuleScalacOptions scalacOpts
-  | setScalaModuleCompilerPlugins (macrosParadiseIvyDep, Nil)
+  | addMacrosParadiseCompilerPlugin
 
 global def chisel3Frontend =
   makeScalaModuleFromJSON here "chisel3Frontend"
   | setScalaModuleRootDir "chisel3/chiselFrontend"
   | setScalaModuleDeps (chisel3CoreMacros, firrtlScalaModule, Nil)
   | setScalaModuleScalacOptions scalacOpts
-  | setScalaModuleCompilerPlugins (macrosParadiseIvyDep, Nil)
+  | addMacrosParadiseCompilerPlugin
 
 global def chisel3Version = "3.2-SNAPSHOT"
 
@@ -50,7 +64,7 @@ global def chisel3ScalaModule =
     | setScalaModuleRootDir "chisel3"
     | setScalaModuleDeps (chisel3Frontend, Nil)
     | setScalaModuleScalacOptions scalacOpts
-    | setScalaModuleCompilerPlugins (macrosParadiseIvyDep, Nil)
+    | addMacrosParadiseCompilerPlugin
   def genSrcs Unit = buildInfo base.getScalaModuleScalaVersion, Nil
   base
   | setScalaModuleFnGeneratedSources genSrcs
