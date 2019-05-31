@@ -9,10 +9,9 @@ def macrosParadiseIvyDep =
   def extractIvyDep json =
     json // `macrosParadise` // `dependencies` | getJString
     | omapPartial stringToIvyDep
-    | getOrFail "macrosParadise ivy dependency not found!"
+    | getOrFail (makeError "macrosParadise ivy dependency not found!")
   readIvyDepsJSON here
   | rmapPass extractIvyDep
-  | rmapFail (makeError _ | Fail) # Convert Fail from String to Error
 
 # TODO Should this be in the standard lib?
 def orElse b = match _
