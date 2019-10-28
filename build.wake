@@ -38,7 +38,7 @@ global def chisel3Frontend =
   | setScalaModuleScalacOptions scalacOpts
   | addMacrosParadiseCompilerPlugin
 
-global def chisel3Version = "3.2-SNAPSHOT"
+global def chisel3Version = "3.2.0"
 
 def buildInfo ver =
   def content =
