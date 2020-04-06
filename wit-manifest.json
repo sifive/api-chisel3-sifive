@@ -1,6 +1,6 @@
 [
     {
-        "commit": "b192eedb5e6103d2931326275f67abe51c86a232",
+        "commit": "dbb024a9adee6d82f37e357cf8b55456674ff65c",
         "name": "chisel3",
         "source": "git@github.com:freechipsproject/chisel3.git"
     },
