@@ -5,7 +5,7 @@
         "source": "git@github.com:freechipsproject/chisel3.git"
     },
     {
-        "commit": "91ba8d363af40b9e37bc049f4091d156e14271a6",
+        "commit": "d545e8c397b190264667e08e5ec23d3ef9e78f3b",
         "name": "api-firrtl-sifive",
         "source": "git@github.com:sifive/api-firrtl-sifive.git"
     }
