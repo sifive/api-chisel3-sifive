@@ -1,0 +1,18 @@
+
+def sanityScalaModule =
+  def scalaVersion = chisel3ScalaModule.getScalaModuleScalaVersion
+  makeScalaModule "sanity" here scalaVersion
+  | setScalaModuleDeps (chisel3ScalaModule, Nil)
+  | setScalaModuleScalacOptions ("-Xsource:2.11", Nil)
+
+# Tests that a simple Chisel module can be compiled to Verilog
+def test Unit =
+  def outputFile = "{here}/Test.v"
+  def classpath = sanityScalaModule.scalaModuleClasspath
+  runJava classpath "TestMain" ("-td", here, Nil) Nil
+  | getJobOutputs
+  | find (_.getPathName ==~ outputFile)
+  | omap getPairFirst
+  | getOrFail "Expected output file {outputFile} not found!"
+
+publish apiChisel3SiFiveTests = test, Nil

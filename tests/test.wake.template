@@ -1,0 +1,6 @@
+
+
+global def runAPIChisel3SiFiveTests Unit =
+  subscribe apiChisel3SiFiveTests
+  | map (_ Unit)
+  | findFail

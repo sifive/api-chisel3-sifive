@@ -1,0 +1,9 @@
+= Wake Chisel3 API
+
+image::https://github.com/sifive/api-chisel3-sifive/workflows/Test/badge.svg[]
+
+https://github.com/sifive/wake[Wake] rules for compiling and running the
+https://www.chisel-lang.org/[Chisel3] hardware construction language.
+
+There is no documentation at the moment, but please see the documentation
+comments within the code itself.
