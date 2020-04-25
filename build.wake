@@ -27,18 +27,18 @@ global def addMacrosParadiseCompilerPlugin module =
 
 global def chisel3CoreMacros =
   makeScalaModuleFromJSON here "chisel3Macros"
-  | setScalaModuleRootDir "chisel3/coreMacros"
+  | setScalaModuleRootDir "chisel3/macros"
   | setScalaModuleScalacOptions scalacOpts
   | addMacrosParadiseCompilerPlugin
 
 global def chisel3Frontend =
-  makeScalaModuleFromJSON here "chisel3Frontend"
-  | setScalaModuleRootDir "chisel3/chiselFrontend"
+  makeScalaModuleFromJSON here "chisel3Core"
+  | setScalaModuleRootDir "chisel3/core"
   | setScalaModuleDeps (chisel3CoreMacros, firrtlScalaModule, Nil)
   | setScalaModuleScalacOptions scalacOpts
   | addMacrosParadiseCompilerPlugin
 
-global def chisel3Version = "3.2.0"
+global def chisel3Version = "3.3.0-RC3"
 
 def buildInfo ver =
   def content =
