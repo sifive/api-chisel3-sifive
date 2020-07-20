@@ -1,3 +1,13 @@
+global topic chisel3Root: String
+def chisel3Root =
+  def paths = subscribe chisel3Root
+  match (head paths)
+    Some path  =
+      if (len paths) != 1 then
+        panic "Multiple published paths for chisel3 root: {format paths}"
+      else
+        path
+    None = "chisel3" # default path in workspace
 
 def buildDir = mkdir "build/chisel3"
 
@@ -27,13 +37,13 @@ global def addMacrosParadiseCompilerPlugin module =
 
 global def chisel3CoreMacros =
   makeScalaModuleFromJSON here "chisel3Macros"
-  | setScalaModuleRootDir "chisel3/macros"
+  | setScalaModuleRootDir "{chisel3Root}/macros"
   | setScalaModuleScalacOptions scalacOpts
   | addMacrosParadiseCompilerPlugin
 
 global def chisel3Frontend =
   makeScalaModuleFromJSON here "chisel3Core"
-  | setScalaModuleRootDir "chisel3/core"
+  | setScalaModuleRootDir "{chisel3Root}/core"
   | setScalaModuleDeps (chisel3CoreMacros, firrtlScalaModule, Nil)
   | setScalaModuleScalacOptions scalacOpts
   | addMacrosParadiseCompilerPlugin
@@ -60,7 +70,7 @@ def buildInfo ver =
 global def chisel3ScalaModule =
   def base =
     makeScalaModuleFromJSON here "chisel3"
-    | setScalaModuleRootDir "chisel3"
+    | setScalaModuleRootDir chisel3Root
     | setScalaModuleDeps (chisel3Frontend, Nil)
     | setScalaModuleScalacOptions scalacOpts
     | addMacrosParadiseCompilerPlugin
