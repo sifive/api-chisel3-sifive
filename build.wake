@@ -1,13 +1,10 @@
 global topic chisel3Root: String
 def chisel3Root =
   def paths = subscribe chisel3Root
-  match (head paths)
-    Some path  =
-      if (len paths) != 1 then
-        panic "Multiple published paths for chisel3 root: {format paths}"
-      else
-        path
-    None = "chisel3" # default path in workspace
+  match paths
+    Nil = "chisel3" # default path in workspace
+    path, Nil = path
+    _ = panic "Multiple published paths for chisel3 root: {format paths}"
 
 def buildDir = mkdir "build/chisel3"
 
