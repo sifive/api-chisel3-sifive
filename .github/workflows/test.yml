@@ -21,7 +21,7 @@ jobs:
         arguments: |
           ${{ env.WIT_WORKSPACE }}
           -a ./wit-packages/api-chisel3-sifive
-          -a git@github.com:sifive/environment-blockci-sifive.git::0.3.0
+          -a git@github.com:sifive/environment-blockci-sifive.git::0.4.0
         force_github_https: true
 
     - name: Run tests
@@ -31,5 +31,5 @@ jobs:
           --volume="$GITHUB_WORKSPACE/$WIT_WORKSPACE:/mnt/workspace" \
           --workdir="/mnt/workspace" \
           --rm \
-          sifive/environment-blockci:0.3.0 \
+          sifive/environment-blockci:0.4.0 \
           api-chisel3-sifive/tests/run-tests.sh
