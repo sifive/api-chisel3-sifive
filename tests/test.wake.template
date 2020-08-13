@@ -1,4 +1,4 @@
-
+global topic apiChisel3SiFiveTests: Unit => Result Path String
 
 global def runAPIChisel3SiFiveTests Unit =
   subscribe apiChisel3SiFiveTests
