@@ -18,4 +18,4 @@ do
   ln -snf "$(basename $file)" "${file%.*}"
 done
 
-wake runAPIChisel3SiFiveTests Unit
+wake -x 'runAPIChisel3SiFiveTests Unit'
