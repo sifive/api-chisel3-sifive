@@ -3,6 +3,8 @@ def buildDir = mkdir "build/chisel3"
 
 def scalacOpts = "-deprecation", "-feature", Nil
 
+def chisel3Root = findGitRepositoryWithFallback "chisel3"
+
 # We ignore scalaVersion because it comes from ScalaModule
 # The scalaVersion in ivydependencies.json is purely for fetching
 def macrosParadiseIvyDep =
@@ -27,13 +29,13 @@ global def addMacrosParadiseCompilerPlugin module =
 
 global def chisel3CoreMacros =
   makeScalaModuleFromJSON here "chisel3Macros"
-  | setScalaModuleRootDir "chisel3/macros"
+  | setScalaModuleRootDir "{chisel3Root}/macros"
   | setScalaModuleScalacOptions scalacOpts
   | addMacrosParadiseCompilerPlugin
 
 global def chisel3Frontend =
   makeScalaModuleFromJSON here "chisel3Core"
-  | setScalaModuleRootDir "chisel3/core"
+  | setScalaModuleRootDir "{chisel3Root}/core"
   | setScalaModuleDeps (chisel3CoreMacros, firrtlScalaModule, Nil)
   | setScalaModuleScalacOptions scalacOpts
   | addMacrosParadiseCompilerPlugin
@@ -60,7 +62,7 @@ def buildInfo ver =
 global def chisel3ScalaModule =
   def base =
     makeScalaModuleFromJSON here "chisel3"
-    | setScalaModuleRootDir "chisel3"
+    | setScalaModuleRootDir chisel3Root
     | setScalaModuleDeps (chisel3Frontend, Nil)
     | setScalaModuleScalacOptions scalacOpts
     | addMacrosParadiseCompilerPlugin
