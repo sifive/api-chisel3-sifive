@@ -1,4 +1,7 @@
 {
+  "chisel3Plugin": {
+    "scalaVersion": "2.12.8"
+  },
   "chisel3Macros": {
     "scalaVersion": "2.12.8",
     "dependencies": [
@@ -16,6 +19,12 @@
     "scalaVersion": "2.12.8",
     "dependencies": [
       "org.scalamacros:::paradise:2.1.0"
+    ]
+  },
+  "chisel3PluginIvyDep": {
+    "scalaVersion": "2.12.8",
+    "dependencies": [
+      "edu.berkeley.cs:::chisel3-plugin:3.4.0-RC3"
     ]
   },
   "chisel3": {
